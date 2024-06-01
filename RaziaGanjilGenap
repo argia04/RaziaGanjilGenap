@@ -1,0 +1,105 @@
+function kenaRazia(date, data) {
+  // Daftar rute yang termasuk dalam aturan ganjil-genap
+  const ganjilGenapRoutes = [
+    "Gajah Mada",
+    "Hayam Wuruk",
+    "Sisingamangaraja",
+    "Panglima Polim",
+    "Fatmawati",
+    "Tomang Raya"
+  ];
+
+  // Array untuk menyimpan hasil pelanggaran
+  const result = [];
+
+  // Looping melalui setiap kendaraan dalam data
+  for (let i = 0; i < data.length; i++) {
+    const vehicle = data[i];
+
+    // Hanya memproses kendaraan yang bertipe "Mobil"
+    if (vehicle.type !== "Mobil") continue;
+
+    // Mengambil nomor plat kendaraan dan digit terakhir dari nomor plat
+    const platNumber = vehicle.plat.split(" ")[1];
+    const lastDigit = parseInt(platNumber[platNumber.length - 1]);
+
+    // Menentukan apakah nomor plat ganjil atau genap
+    const isPlatGanjil = lastDigit % 2 !== 0;
+
+    // Menentukan apakah tanggal ganjil atau genap
+    const isDateGanjil = date % 2 !== 0;
+
+    // Variabel untuk menghitung jumlah pelanggaran
+    let tilangCount = 0;
+
+    // Looping melalui rute yang dilalui kendaraan
+    for (let j = 0; j < vehicle.rute.length; j++) {
+      const route = vehicle.rute[j];
+
+      // Looping melalui daftar rute ganjil-genap
+      for (let k = 0; k < ganjilGenapRoutes.length; k++) {
+        // Jika rute kendaraan termasuk dalam rute ganjil-genap
+        if (route === ganjilGenapRoutes[k]) {
+          // Jika nomor plat tidak sesuai dengan aturan ganjil-genap berdasarkan tanggal
+          if (isPlatGanjil !== isDateGanjil) {
+            // Tambahkan pelanggaran
+            tilangCount++;
+          }
+        }
+      }
+    }
+
+    // Jika ada pelanggaran, tambahkan ke dalam array hasil
+    if (tilangCount > 0) {
+      result.push({ name: vehicle.name, tilang: tilangCount });
+    }
+  }
+
+  // Kembalikan hasil pelanggaran
+  return result;
+}
+
+// Contoh penggunaan fungsi
+console.log(
+  kenaRazia(27, [
+    {
+      name: "Denver",
+      plat: "B 2791 KDS",
+      type: "Mobil",
+      rute: ["TB Simatupang", "Panglima Polim", "Depok", "Senen Raya"]
+    },
+    {
+      name: "Toni",
+      plat: "B 1212 JBB",
+      type: "Mobil",
+      rute: [
+        "Pintu Besar Selatan",
+        "Panglima Polim",
+        "Depok",
+        "Senen Raya",
+        "Kemang"
+      ]
+    },
+    {
+      name: "Stark",
+      plat: "B 444 XSX",
+      type: "Motor",
+      rute: ["Pondok Indah", "Depok", "Senen Raya", "Kemang"]
+    },
+    {
+      name: "Anna",
+      plat: "B 678 DD",
+      type: "Mobil",
+      rute: [
+        "Fatmawati",
+        "Panglima Polim",
+        "Depok",
+        "Senen Raya",
+        "Kemang",
+        "Gajah Mada"
+      ]
+    }
+  ])
+);
+
+// Output: [ { name: 'Toni', tilang: 1 }, { name: 'Anna', tilang: 3 } ]
